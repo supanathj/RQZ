@@ -1,41 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Distance, Frequency & PFD Calculator</title>
     <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --font-family: 'Arial', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: var(--font-family);
             text-align: center;
             margin: 20px;
+            padding: 0;
+            box-sizing: border-box;
         }
-        input, button {
+
+        h2 {
+            color: var(--primary-color);
+        }
+
+        input,
+        button {
             padding: 10px;
             margin: 5px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            font-size: 16px;
         }
+
         button {
             cursor: pointer;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
         }
-        #result, #pfdResult, #freqResult {
+
+        button:hover {
+            background-color: darken(var(--primary-color), 10%);
+        }
+
+        #result,
+        #pfdResult,
+        #freqResult {
             font-size: 18px;
             margin-top: 20px;
             font-weight: bold;
         }
+
         #map {
-            height: 500px;
-            width: 80%;
+            height: 300px;
+            width: 100%;
             margin: 20px auto;
             border: 1px solid #ccc;
         }
+
         .formula {
             font-size: 16px;
             margin-top: 10px;
-            color: #555;
+            color: var(--secondary-color);
+        }
+
+        @media (min-width: 768px) {
+            #map {
+                height: 500px;
+                width: 80%;
+            }
+        }
+
+        .zone-description {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .zone-description.orange {
+            color: orange;
         }
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
+
 <body>
 
     <h2>Location Zone Checker</h2>
@@ -53,15 +103,15 @@
 
     <div id="map"></div>
 
-	<p style="color: red; font-weight: bold;">The Protection Zone (3 km) is highlighted in Red.</p>
-	<p style="color: orange; font-weight: bold;">The Coordination Zone (20 km) is highlighted in Orange.</p>
+    <p class="zone-description">The Protection Zone (3 km) is highlighted in Red.</p>
+    <p class="zone-description orange">The Coordination Zone (20 km) is highlighted in Orange.</p>
 
     <h2>Radio Astronomy Frequency Check</h2>
     <p>Enter the lower and upper frequency (in MHz):</p>
 
     <label for="lowerFreq">Lower Frequency:</label>
     <input type="number" id="lowerFreq" step="any" placeholder="Enter lower frequency">
-    
+
     <label for="upperFreq">Upper Frequency:</label>
     <input type="number" id="upperFreq" step="any" placeholder="Enter upper frequency">
 
@@ -88,7 +138,7 @@
         let pfdLimit = -57;
         let map, userMarker;
 
-        window.onload = function() {
+        window.onload = function () {
             map = L.map('map').setView([referenceLat, referenceLon], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
@@ -117,8 +167,8 @@
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
         }
@@ -152,8 +202,6 @@
 
             if (userMarker) map.removeLayer(userMarker);
             userMarker = L.marker([lat, lon]).addTo(map).bindPopup("New Location").openPopup();
-
-		
         }
 
         function calculatePFD() {
@@ -183,61 +231,62 @@
             pfdResult.style.color = pfd_dB <= pfdLimit ? "green" : "red";
         }
     </script>
-<script>
-    const radioAstronomyBands = [
-        { range: [1400, 1427], limit: -180 },
-        { range: [1610.6, 1613.8], limit: -184 },
-        { range: [1660, 1670], limit: -181 },
-        { range: [1718.8, 1722.2], limit: -183 },
-        { range: [4800, 5000], limit: -165 },
-        { range: [6650, 6675.2], limit: -167 },
-        { range: [10600, 10700], limit: -160 },
-        { range: [14470, 14500], limit: -158 },
-        { range: [15350, 15400], limit: -157 },
-        { range: [22010, 22500], limit: -145 },
-        { range: [22810, 22860], limit: -150 },
-        { range: [23070, 23120], limit: -150 },
-        { range: [23600, 24000], limit: -145 },
-        { range: [31300, 31800], limit: -141 },
-        { range: [42500, 43500], limit: -136 },
-        { range: [48940, 49040], limit: -140 },
-        { range: [79000, 86000], limit: -130 },
-        { range: [86000, 94000], limit: -129 },
-        { range: [94000, 100000], limit: -128 },
-        { range: [100000, 102000], limit: -131 },
-        { range: [102000, 111800], limit: -127 }
-    ];
+    <script>
+        const radioAstronomyBands = [
+            { range: [1400, 1427], limit: -180 },
+            { range: [1610.6, 1613.8], limit: -184 },
+            { range: [1660, 1670], limit: -181 },
+            { range: [1718.8, 1722.2], limit: -183 },
+            { range: [4800, 5000], limit: -165 },
+            { range: [6650, 6675.2], limit: -167 },
+            { range: [10600, 10700], limit: -160 },
+            { range: [14470, 14500], limit: -158 },
+            { range: [15350, 15400], limit: -157 },
+            { range: [22010, 22500], limit: -145 },
+            { range: [22810, 22860], limit: -150 },
+            { range: [23070, 23120], limit: -150 },
+            { range: [23600, 24000], limit: -145 },
+            { range: [31300, 31800], limit: -141 },
+            { range: [42500, 43500], limit: -136 },
+            { range: [48940, 49040], limit: -140 },
+            { range: [79000, 86000], limit: -130 },
+            { range: [86000, 94000], limit: -129 },
+            { range: [94000, 100000], limit: -128 },
+            { range: [100000, 102000], limit: -131 },
+            { range: [102000, 111800], limit: -127 }
+        ];
 
-    function checkFrequency() {
-        const lowerFreq = parseFloat(document.getElementById("lowerFreq").value);
-        const upperFreq = parseFloat(document.getElementById("upperFreq").value);
-        const freqResult = document.getElementById("freqResult");
+        function checkFrequency() {
+            const lowerFreq = parseFloat(document.getElementById("lowerFreq").value);
+            const upperFreq = parseFloat(document.getElementById("upperFreq").value);
+            const freqResult = document.getElementById("freqResult");
 
-        if (isNaN(lowerFreq) || isNaN(upperFreq) || lowerFreq >= upperFreq) {
-            freqResult.textContent = "Enter a valid frequency range.";
-            freqResult.style.color = "red";
-            return;
-        }
-
-        let found = false;
-        for (const band of radioAstronomyBands) {
-            if ((lowerFreq >= band.range[0] && lowerFreq <= band.range[1]) || 
-                (upperFreq >= band.range[0] && upperFreq <= band.range[1]) ||
-                (lowerFreq <= band.range[0] && upperFreq >= band.range[1])) {
-                found = true;
-                pfdLimit = band.limit;
-                freqResult.textContent = `⚠️ Overlaps with radio astronomy. PFD limit: ${pfdLimit} dB(W/m²).`;
-                freqResult.style.color = "orange";
+            if (isNaN(lowerFreq) || isNaN(upperFreq) || lowerFreq >= upperFreq) {
+                freqResult.textContent = "Enter a valid frequency range.";
+                freqResult.style.color = "red";
                 return;
             }
-        }
 
-        pfdLimit = -57;
-        freqResult.textContent = "✅ Not in a protected band.";
-        freqResult.style.color = "green";
-    }
-</script>
+            let found = false;
+            for (const band of radioAstronomyBands) {
+                if ((lowerFreq >= band.range[0] && lowerFreq <= band.range[1]) ||
+                    (upperFreq >= band.range[0] && upperFreq <= band.range[1]) ||
+                    (lowerFreq <= band.range[0] && upperFreq >= band.range[1])) {
+                    found = true;
+                    pfdLimit = band.limit;
+                    freqResult.textContent = `⚠️ Overlaps with radio astronomy. PFD limit: ${pfdLimit} dB(W/m²).`;
+                    freqResult.style.color = "orange";
+                    return;
+                }
+            }
+
+            pfdLimit = -57;
+            freqResult.textContent = "✅ Not in a protected band.";
+            freqResult.style.color = "green";
+        }
+    </script>
 
 
 </body>
+
 </html>
