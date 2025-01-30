@@ -239,10 +239,11 @@
 
             result.textContent = message;
 
-            if (userMarker) map.removeLayer(userMarker);
-            userMarker = L.marker([lat, lon]).addTo(map).bindPopup("New Location").openPopuuserMarker = L.marker([lat, lon]).addTo(map)
-    .bindPopup(`New Site: ${lat.toFixed(6)}, ${lon.toFixed(6)}`).openPopup();p();
-        }
+          	if (userMarker) {
+    		    map.removeLayer(userMarker);
+	        }
+	          userMarker = L.marker([lat, lon]).addTo(map).bindPopup(`New Site: ${lat.toFixed(6)}, ${lon.toFixed(6)}`).openPopup();
+	        }
 
         function calculatePFD() {
             const eirp = parseFloat(document.getElementById("eirp").value);
