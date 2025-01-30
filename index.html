@@ -4,25 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distance, Frequency & PFD Calculator</title>
+    <title>Thailand Radio Quiet Zone Requirement Checker</title>
     <style>
         :root {
             --primary-color: #007bff;
             --secondary-color: #6c757d;
             --danger-color: #dc3545;
+            --warning-color: #ffc107;
             --success-color: #28a745;
             --font-family: 'Arial', sans-serif;
+            --background-color: #f8f9fa;
         }
 
         body {
             font-family: var(--font-family);
-            text-align: center;
-            margin: 20px;
+            margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: var(--background-color);
         }
 
-        h2 {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .card h2 {
+            margin-top: 0;
             color: var(--primary-color);
         }
 
@@ -57,7 +85,7 @@
         #map {
             height: 300px;
             width: 100%;
-            margin: 20px auto;
+            margin: 20px 0;
             border: 1px solid #ccc;
         }
 
@@ -67,20 +95,19 @@
             color: var(--secondary-color);
         }
 
-        @media (min-width: 768px) {
-            #map {
-                height: 500px;
-                width: 80%;
-            }
-        }
-
         .zone-description {
             color: var(--danger-color);
             font-weight: bold;
         }
 
         .zone-description.orange {
-            color: orange;
+            color: var(--warning-color);
+        }
+
+        @media (min-width: 768px) {
+            #map {
+                height: 500px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -88,47 +115,59 @@
 
 <body>
 
-    <h2>Location Zone Checker</h2>
-    <p>Enter the latitude and longitude to check the zone:</p>
+    <div class="header">
+        <h1>Thailand Radio Quiet Zone Requirement Checker</h1>
+    </div>
 
-    <label for="latitude">Latitude:</label>
-    <input type="number" id="latitude" step="any" placeholder="Enter latitude">
+    <div class="container">
+        <div class="card">
+            <h2>Location Zone Checker</h2>
+            <p>Enter the latitude and longitude to check the zone:</p>
 
-    <label for="longitude">Longitude:</label>
-    <input type="number" id="longitude" step="any" placeholder="Enter longitude">
+            <label for="latitude">Latitude:</label>
+            <input type="number" id="latitude" step="any" placeholder="Enter latitude">
 
-    <button onclick="checkLocation()">Check Zone</button>
+            <label for="longitude">Longitude:</label>
+            <input type="number" id="longitude" step="any" placeholder="Enter longitude">
 
-    <p id="result"></p>
+            <button onclick="checkLocation()">Check Zone</button>
 
-    <div id="map"></div>
+            <p id="result"></p>
 
-    <p class="zone-description">The Protection Zone (3 km) is highlighted in Red.</p>
-    <p class="zone-description orange">The Coordination Zone (20 km) is highlighted in Orange.</p>
+            <div id="map"></div>
 
-    <h2>Radio Astronomy Frequency Check</h2>
-    <p>Enter the lower and upper frequency (in MHz):</p>
+            <p class="zone-description">The Protection Zone (3 km) is highlighted in Red.</p>
+            <p class="zone-description orange">The Coordination Zone (20 km) is highlighted in Orange.</p>
+        </div>
 
-    <label for="lowerFreq">Lower Frequency:</label>
-    <input type="number" id="lowerFreq" step="any" placeholder="Enter lower frequency">
+        <div class="card">
+            <h2>Radio Astronomy Frequency Check</h2>
+            <p>Enter the lower and upper frequency (in MHz):</p>
 
-    <label for="upperFreq">Upper Frequency:</label>
-    <input type="number" id="upperFreq" step="any" placeholder="Enter upper frequency">
+            <label for="lowerFreq">Lower Frequency:</label>
+            <input type="number" id="lowerFreq" step="any" placeholder="Enter lower frequency">
 
-    <button onclick="checkFrequency()">Check Frequency</button>
+            <label for="upperFreq">Upper Frequency:</label>
+            <input type="number" id="upperFreq" step="any" placeholder="Enter upper frequency">
 
-    <p id="freqResult"></p>
+            <button onclick="checkFrequency()">Check Frequency</button>
 
-    <h2>Power Flux Density (PFD) Calculation</h2>
-    <p>Enter the EIRP value (in Watts) of the new station:</p>
+            <p id="freqResult"></p>
+        </div>
 
-    <label for="eirp">EIRP (W):</label>
-    <input type="number" id="eirp" step="any" placeholder="Enter EIRP">
+        <div class="card">
+            <h2>Power Flux Density (PFD) Calculation</h2>
+            <p>Enter the EIRP value (in Watts) of the new station:</p>
 
-    <button onclick="calculatePFD()">Calculate PFD</button>
+            <label for="eirp">EIRP (W):</label>
+            <input type="number" id="eirp" step="any" placeholder="Enter EIRP">
 
-    <p class="formula">Formula: PFD (W/m²) = EIRP / (4πd²)</p>
-    <p id="pfdResult"></p>
+            <button onclick="calculatePFD()">Calculate PFD</button>
+
+            <p class="formula">Formula: PFD (W/m²) = EIRP / (4πd²)</p>
+            <p id="pfdResult"></p>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
@@ -285,7 +324,6 @@
             freqResult.style.color = "green";
         }
     </script>
-
 
 </body>
 
