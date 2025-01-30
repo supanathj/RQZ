@@ -240,7 +240,8 @@
             result.textContent = message;
 
             if (userMarker) map.removeLayer(userMarker);
-            userMarker = L.marker([lat, lon]).addTo(map).bindPopup("New Location").openPopup();
+            userMarker = L.marker([lat, lon]).addTo(map).bindPopup("New Location").openPopuuserMarker = L.marker([lat, lon]).addTo(map)
+    .bindPopup(`New Site: ${lat.toFixed(6)}, ${lon.toFixed(6)}`).openPopup();p();
         }
 
         function calculatePFD() {
