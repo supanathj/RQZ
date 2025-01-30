@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distance, Frequency & PFD Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 10px;
+        }
+        input, button {
+            padding: 12px;
+            margin: 8px;
+            width: 90%;
+            max-width: 350px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            cursor: pointer;
+        }
+        #result, #pfdResult, #freqResult {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #map {
+            height: 300px;
+            width: 100%;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+        }
+        .formula {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 768px) {
+            body {
+                margin: 5px;
+            }
+            h2 {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 18px;
+            }
+            input, button {
+                padding: 10px;
+                font-size: 14px;
+            }
+            #map {
+                height: 250px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+    <h2>Location Zone Checker</h2>
+    <p>Enter the latitude and longitude to check the zone:</p>
+
+    <label for="latitude">Latitude:</label>
+    <input type="number" id="latitude" step="any" placeholder="Enter latitude">
+
+    <label for="longitude">Longitude:</label>
+    <input type="number" id="longitude" step="any" placeholder="Enter longitude">
+
+    <button onclick="checkLocation()">Check Zone</button>
+
+    <p id="result"></p>
+
+    <div id="map"></div>
+
+    <p style="color: red; font-weight: bold;">The Protection Zone (3 km) is highlighted in Red.</p>
+    <p style="color: orange; font-weight: bold;">The Coordination Zone (20 km) is highlighted in Orange.</p>
+
+    <h2>Radio Astronomy Frequency Check</h2>
+    <p>Enter the lower and upper frequency (in MHz):</p>
+
+    <label for="lowerFreq">Lower Frequency:</label>
+    <input type="number" id="lowerFreq" step="any" placeholder="Enter lower frequency">
+    
+    <label for="upperFreq">Upper Frequency:</label>
+    <input type="number" id="upperFreq" step="any" placeholder="Enter upper frequency">
+
+    <button onclick="checkFrequency()">Check Frequency</button>
+
+    <p id="freqResult"></p>
+
+    <h2>Power Flux Density (PFD) Calculation</h2>
+    <p>Enter the EIRP value (in Watts) of the new station:</p>
+
+    <label for="eirp">EIRP (W):</label>
+    <input type="number" id="eirp" step="any" placeholder="Enter EIRP">
+
+    <button onclick="calculatePFD()">Calculate PFD</button>
+
+    <p class="formula">Formula: PFD (W/m²) = EIRP / (4πd²)</p>
+    <p id="pfdResult"></p>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const referenceLat = 18.864036;
+        const referenceLon = 99.24881;
+        let calculatedDistance = 0;
+        let pfdLimit = -57;
+        let map, userMarker;
+
+        window.onload = function() {
+            map = L.map('map').setView([referenceLat, referenceLon], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.marker([referenceLat, referenceLon]).addTo(map)
+                .bindPopup("Reference Location").openPopup();
+
+            L.circle([referenceLat, referenceLon], {
+                color: "red",
+                fillColor: "#ff6666",
+                fillOpacity: 0.3,
+                radius: 3000
+            }).addTo(map);
+
+            L.circle([referenceLat, referenceLon], {
+                color: "orange",
+                fillColor: "#ffcc66",
+                fillOpacity: 0.2,
+                radius: 20000
+            }).addTo(map);
+        };
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function checkLocation() {
+            const lat = parseFloat(document.getElementById("latitude").value);
+            const lon = parseFloat(document.getElementById("longitude").value);
+            const result = document.getElementById("result");
+
+            if (isNaN(lat) || isNaN(lon)) {
+                result.textContent = "Enter valid coordinates.";
+                result.style.color = "red";
+                return;
+            }
+
+            calculatedDistance = getDistance(referenceLat, referenceLon, lat, lon);
+            let message;
+
+            if (calculatedDistance <= 3) {
+                message = `The location is in the Protection Zone (Distance: ${calculatedDistance.toFixed(2)} km).`;
+                result.style.color = "red";
+            } else if (calculatedDistance <= 20) {
+                message = `The location is in the Coordination Zone (Distance: ${calculatedDistance.toFixed(2)} km).`;
+                result.style.color = "orange";
+            } else {
+                message = `The location is NOT in the Radio Quiet Zone (Distance: ${calculatedDistance.toFixed(2)} km).`;
+                result.style.color = "green";
+            }
+
+            result.textContent = message;
+
+            if (userMarker) map.removeLayer(userMarker);
+            userMarker = L.marker([lat, lon]).addTo(map).bindPopup("New Location").openPopup();
+        }
+
+        function calculatePFD() {
+            const eirp = parseFloat(document.getElementById("eirp").value);
+            const pfdResult = document.getElementById("pfdResult");
+
+            if (isNaN(eirp) || eirp <= 0) {
+                pfdResult.textContent = "Enter a valid EIRP value.";
+                pfdResult.style.color = "red";
+                return;
+            }
+
+            if (calculatedDistance == 0) {
+                pfdResult.textContent = "Enter a location first.";
+                pfdResult.style.color = "red";
+                return;
+            }
+
+            const distanceMeters = calculatedDistance * 1000;
+            const pfd = eirp / (4 * Math.PI * Math.pow(distanceMeters, 2));
+            const pfd_dB = 10 * Math.log10(pfd);
+
+            pfdResult.textContent = pfd_dB <= pfdLimit
+                ? `✅ PFD is within the limit (${pfdLimit} dB(W/m²)). PFD: ${pfd_dB.toFixed(2)} dB(W/m²).`
+                : `❌ PFD exceeds limit (${pfdLimit} dB(W/m²)). PFD: ${pfd_dB.toFixed(2)} dB(W/m²).`;
+
+            pfdResult.style.color = pfd_dB <= pfdLimit ? "green" : "red";
+        }
+    </script>
+</body>
+</html>
