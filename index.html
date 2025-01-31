@@ -219,11 +219,19 @@
             const lon = parseFloat(document.getElementById("longitude").value);
             const result = document.getElementById("result");
 
+	    const latMin = -90.0, latMax = 90.0;
+    	    const lonMin = -180.0, lonMax = 180.0;
+
             if (isNaN(lat) || isNaN(lon)) {
-                result.textContent = "กรุณาในพิกัดในรูปแบบที่ถูกต้อง";
+                result.textContent = "กรุณาในพิกัด";
                 result.style.color = "red";
                 return;
             }
+    	    if (lat < latMin || lat > latMax || lon < lonMin || lon > lonMax) {
+        	result.textContent = `พิกัดอยู่นอกช่วงที่กำหนด (ละติจูด: ${latMin} - ${latMax}, ลองจิจูด: ${lonMin} - ${lonMax})`;
+        	result.style.color = "red";
+        	return;
+   	     }
 
             calculatedDistance = getDistance(referenceLat, referenceLon, lat, lon);
             let message;
