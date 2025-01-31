@@ -136,8 +136,8 @@
 
             <div id="map"></div>
 
-            <p class="zone-description">พื้นที่คุ้มครอง (3 km) เป็นพื้นที่โซนสีแดง ซึ่งไม่อนุญาตให้ตั้งสถานีวิทยุคมนาคมเพิ่มเติม ยกเว้นเป็นรายกรณีตามความจำเป็น</p>
-            <p class="zone-description orange">พื้นที่ประสานงาน (20 km) เป็นพื้นที่โซนสีส้ม ซึ่งสถานีที่จะตั้งจะต้องมีค่าระดับความแรงสัญญาณสอดคล้องตามระดับที่กำหนด</p>
+            <p class="zone-description">พื้นที่คุ้มครอง (3 km) เป็นพื้นที่โซนสีแดง: ไม่อนุญาตให้ตั้งสถานีวิทยุคมนาคมเพิ่มเติม ยกเว้นได้รับอนุญาตเป็นรายกรณีตามความจำเป็น</p>
+            <p class="zone-description orange">พื้นที่ประสานงาน (20 km) เป็นพื้นที่โซนสีส้ม: สถานีที่จะตั้งจะต้องมีค่าระดับความแรงสัญญาณสอดคล้องตามระดับที่กำหนด</p>
         </div>
 
         <div class="card">
@@ -164,8 +164,9 @@
 
             <button onclick="calculatePFD()">ตรวจสอบระดับสัญญาณ</button>
 
-            <p class="formula">สูตรการคำนวณ: PFD (W/m²) = EIRP / (4πd²)</p>
-	    <p class="formula">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PFD (dBW/m²) = 10log10 (PFD(W/m²))</p>
+            <p class="formula">สูตรการคำนวณ</p>
+	    <p class="formula">  PFD (W/m²) = EIRP / (4πd²)</p>
+	    <p class="formula">PFD (dBW/m²) = 10log10 (PFD (W/m²))</p>
             <p id="pfdResult"></p>
         </div>
     </div>
