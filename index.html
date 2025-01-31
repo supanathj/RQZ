@@ -54,6 +54,15 @@
             color: var(--primary-color);
         }
 
+        .three-column {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .three-column .card {
+            flex: 0 0 32%;
+        }
+
         input,
         button {
             padding: 10px;
@@ -119,7 +128,7 @@
         <h1>ตรวจสอบความสอดคล้องเบื้องต้นในพื้นที่ Radio Quiet Zone</h1>
     </div>
 
-    <div class="container">
+    <div class="container three-column">
         <div class="card">
             <h2>ตรวจสอบพิกัดของสถานีที่สนใจ</h2>
             <p>กรุณาระบุพิกัดของสถานีที่สนใจ:</p>
@@ -165,8 +174,8 @@
             <button onclick="calculatePFD()">ตรวจสอบระดับสัญญาณ</button>
 
             <p class="formula">สูตรการคำนวณ</p>
-	    <p class="formula">  PFD (W/m²) = EIRP / (4πd²) โดย d คือระยะห่างจากตำแหน่งอ้างอิง (m)</p>
-	    <p class="formula">PFD (dBW/m²) = 10log10 (PFD (W/m²))</p>
+            <p class="formula">  PFD (W/m²) = EIRP / (4πd²) โดย d คือระยะห่างจากตำแหน่งอ้างอิง (m)</p>
+            <p class="formula">PFD (dBW/m²) = 10log10 (PFD (W/m²))</p>
             <p id="pfdResult"></p>
         </div>
     </div>
@@ -219,19 +228,19 @@
             const lon = parseFloat(document.getElementById("longitude").value);
             const result = document.getElementById("result");
 
-	    const latMin = -90.0, latMax = 90.0;
-    	    const lonMin = -180.0, lonMax = 180.0;
+            const latMin = -90.0, latMax = 90.0;
+            const lonMin = -180.0, lonMax = 180.0;
 
             if (isNaN(lat) || isNaN(lon)) {
                 result.textContent = "กรุณาในพิกัด";
                 result.style.color = "red";
                 return;
             }
-    	    if (lat < latMin || lat > latMax || lon < lonMin || lon > lonMax) {
-        	result.textContent = `พิกัดอยู่นอกช่วงที่กำหนด (ละติจูด: ${latMin} ถึง ${latMax}, ลองจิจูด: ${lonMin} ถึง ${lonMax})`;
-        	result.style.color = "red";
-        	return;
-   	     }
+            if (lat < latMin || lat > latMax || lon < lonMin || lon > lonMax) {
+                result.textContent = `พิกัดอยู่นอกช่วงที่กำหนด (ละติจูด: ${latMin} ถึง ${latMax}, ลองจิจูด: ${lonMin} ถึง ${lonMax})`;
+                result.style.color = "red";
+                return;
+            }
 
             calculatedDistance = getDistance(referenceLat, referenceLon, lat, lon);
             let message;
@@ -249,11 +258,11 @@
 
             result.textContent = message;
 
-          	if (userMarker) {
-    		    map.removeLayer(userMarker);
-	        }
-	          userMarker = L.marker([lat, lon]).addTo(map).bindPopup(`สถานีใหม่: ${lat.toFixed(6)}, ${lon.toFixed(6)}`).openPopup();
-	        }
+            if (userMarker) {
+                map.removeLayer(userMarker);
+            }
+            userMarker = L.marker([lat, lon]).addTo(map).bindPopup(`สถานีใหม่: ${lat.toFixed(6)}, ${lon.toFixed(6)}`).openPopup();
+        }
 
         function calculatePFD() {
             const eirp = parseFloat(document.getElementById("eirp").value);
@@ -276,8 +285,8 @@
             const pfd_dB = 10 * Math.log10(pfd);
 
             pfdResult.innerHTML = pfd_dB <= pfdLimit
-    		? `✅ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) ซึ่งไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>ท่านสามารถใช้ผลการคำนวณนี้ประกอบคำขอรับอนุญาตได้โดยไม่ต้องทำการทดสอบเพิ่มเติม`
-   		: `❌ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>หากประสงค์จะใช้ค่าความแรงดังกล่าว กรุณาใช้โปรแกรมการตรวจสอบระดับความแรงสัญญาณที่ละเอียดขึ้น และแนบผลการคำนวณประกอบคำขอรับอนุญาต`;
+            ? `✅ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) ซึ่งไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>ท่านสามารถใช้ผลการคำนวณนี้ประกอบคำขอรับอนุญาตได้โดยไม่ต้องทำการทดสอบเพิ่มเติม`
+            : `❌ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>หากประสงค์จะใช้ค่าความแรงดังกล่าว กรุณาใช้โปรแกรมการตรวจสอบระดับความแรงสัญญาณที่ละเอียดขึ้น และแนบผลการคำนวณประกอบคำขอรับอนุญาต`;
             pfdResult.style.color = pfd_dB <= pfdLimit ? "green" : "red";
         }
     </script>
