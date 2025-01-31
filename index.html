@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,32 +14,27 @@
             --font-family: 'Arial', sans-serif;
             --background-color: #f8f9fa;
         }
-
         body {
             font-family: var(--font-family);
             margin: 0;
             padding: 0;
             background-color: var(--background-color);
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
         .header {
             background-color: var(--primary-color);
             color: white;
             padding: 20px;
             text-align: center;
         }
-
         h1 {
             margin: 0;
             font-size: 24px;
         }
-
         .card {
             background-color: white;
             border-radius: 8px;
@@ -48,62 +42,49 @@
             padding: 20px;
             margin: 20px 0;
         }
-
         .card h2 {
             margin-top: 0;
             color: var(--primary-color);
         }
-
-        input,
-        button {
+        input, button {
             padding: 10px;
             margin: 5px;
             border: 1px solid var(--secondary-color);
             border-radius: 4px;
             font-size: 16px;
         }
-
         button {
             cursor: pointer;
             background-color: var(--primary-color);
             color: white;
             border: none;
         }
-
         button:hover {
             background-color: darken(var(--primary-color), 10%);
         }
-
-        #result,
-        #pfdResult,
-        #freqResult {
+        #result, #pfdResult, #freqResult {
             font-size: 18px;
             margin-top: 20px;
             font-weight: bold;
         }
-
         #map {
             height: 300px;
             width: 100%;
             margin: 20px 0;
             border: 1px solid #ccc;
         }
-
         .formula {
             font-size: 16px;
             margin-top: 10px;
             color: var(--secondary-color);
         }
-
         .zone-description {
             color: var(--danger-color);
             font-weight: bold;
         }
-
         .zone-description.orange {
             color: var(--warning-color);
         }
-
         @media (min-width: 768px) {
             #map {
                 height: 500px;
@@ -112,66 +93,49 @@
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
-
 <body>
-
     <div class="header">
         <h1>ตรวจสอบความสอดคล้องเบื้องต้นในพื้นที่ Radio Quiet Zone</h1>
     </div>
-
     <div class="container">
         <div class="card">
             <h2>ตรวจสอบพิกัดของสถานีที่สนใจ</h2>
             <p>กรุณาระบุพิกัดของสถานีที่สนใจ:</p>
-
             <label for="latitude">ละติจูด:</label>
             <input type="number" id="latitude" step="any" placeholder="ระบุพิกัด latitude">
-
             <label for="longitude">ลองจิจูด:</label>
             <input type="number" id="longitude" step="any" placeholder="ระบุพิกัด longitude">
-
             <button onclick="checkLocation()">ตรวจสอบพิกัด</button>
-
             <p id="result"></p>
-
             <div id="map"></div>
-
-            <p class="zone-description">พื้นที่คุ้มครอง (3 km) เป็นพื้นที่โซนสีแดง: ไม่อนุญาตให้ตั้งสถานีวิทยุคมนาคมเพิ่มเติม ยกเว้นได้รับอนุญาตเป็นรายกรณีตามความจำเป็น</p>
-            <p class="zone-description orange">พื้นที่ประสานงาน (20 km) เป็นพื้นที่โซนสีส้ม: สถานีที่จะตั้งจะต้องมีค่าระดับความแรงสัญญาณสอดคล้องตามระดับที่กำหนด</p>
+            <p class="zone-description">พื้นที่คุ้มครอง (3 km) เป็นพื้นที่โซนสีแดง: ไม่อนุญาตให้ตั้งสถานี</p>
+            <p class="zone-description orange">พื้นที่ประสานงาน (20 km) เป็นพื้นที่โซนสีส้ม: สถานีที่สนใจต้องทำการประสานงานก่อน</p>
         </div>
-
         <div class="card">
             <h2>ตรวจสอบการทับซ้อนกับคลื่นความถี่วิทยุดาราศาสตร์</h2>
             <p>กรุณาระบุคลื่นความถี่ (หน่วย MHz):</p>
-
             <label for="lowerFreq">ความถี่เริ่มต้น:</label>
             <input type="number" id="lowerFreq" step="any" placeholder="ระบุคลื่นความถี่เริ่มต้น">
-
             <label for="upperFreq">ความถี่สิ้นสุด:</label>
             <input type="number" id="upperFreq" step="any" placeholder="ระบุคลื่นความถี่สิ้นสุด">
-
             <button onclick="checkFrequency()">ตรวจสอบคลื่นความถี่</button>
-
             <p id="freqResult"></p>
         </div>
-
         <div class="card">
             <h2>ตรวจสอบค่าความแรงระดับสัญญาณ Power Flux Density (PFD) เบื้องต้น</h2>
             <p>กรุณาระบุค่ากำลังส่ง EIRP (หน่วย Watts) ของสถานีที่สนใจ:</p>
-
             <label for="eirp">EIRP (W):</label>
             <input type="number" id="eirp" step="any" placeholder="ระบุค่า EIRP">
-
             <button onclick="calculatePFD()">ตรวจสอบระดับสัญญาณ</button>
-
             <p class="formula">สูตรการคำนวณ</p>
-	    <p class="formula">  PFD (W/m²) = EIRP / (4πd²) โดย d คือระยะห่างจากตำแหน่งอ้างอิง (m)</p>
-	    <p class="formula">PFD (dBW/m²) = 10log10 (PFD (W/m²))</p>
+            <p class="formula">PFD (W/m²) = EIRP / (4πd²) โดย d คือระยะห่างจากตำแหน่งอ้างอิง (m)</p>
+            <p class="formula">PFD (dBW/m²) = 10log10 (PFD (W/m²))</p>
             <p id="pfdResult"></p>
         </div>
+        <button id="downloadPDF">ดาวน์โหลด PDF</button>
     </div>
-
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <script>
         const referenceLat = 18.864036;
         const referenceLon = 99.216881;
@@ -186,7 +150,7 @@
             }).addTo(map);
 
             L.marker([referenceLat, referenceLon]).addTo(map)
-    .bindPopup(`ตำแหน่งอ้างอิง: ${referenceLat}, ${referenceLon}`).openPopup();
+                .bindPopup(`ตำแหน่งอ้างอิง: ${referenceLat}, ${referenceLon}`).openPopup();
 
             L.circle([referenceLat, referenceLon], {
                 color: "red",
@@ -219,41 +183,42 @@
             const lon = parseFloat(document.getElementById("longitude").value);
             const result = document.getElementById("result");
 
-	    const latMin = -90.0, latMax = 90.0;
-    	    const lonMin = -180.0, lonMax = 180.0;
+            const latMin = 5.0, latMax = 20.0; // Example latitude range
+            const lonMin = 97.0, lonMax = 105.0; // Example longitude range
 
             if (isNaN(lat) || isNaN(lon)) {
-                result.textContent = "กรุณาในพิกัด";
+                result.textContent = "กรุณาในพิกัดในรูปแบบที่ถูกต้อง";
                 result.style.color = "red";
                 return;
             }
-    	    if (lat < latMin || lat > latMax || lon < lonMin || lon > lonMax) {
-        	result.textContent = `พิกัดอยู่นอกช่วงที่กำหนด (ละติจูด: ${latMin} ถึง ${latMax}, ลองจิจูด: ${lonMin} ถึง ${lonMax})`;
-        	result.style.color = "red";
-        	return;
-   	     }
+
+            if (lat < latMin || lat > latMax || lon < lonMin || lon > lonMax) {
+                result.textContent = `พิกัดอยู่นอกช่วงที่กำหนด (ละติจูด: ${latMin} - ${latMax}, ลองจิจูด: ${lonMin} - ${lonMax})`;
+                result.style.color = "red";
+                return;
+            }
 
             calculatedDistance = getDistance(referenceLat, referenceLon, lat, lon);
             let message;
 
             if (calculatedDistance <= 3) {
-                message = `สถานีนี้อยู่ในพื้นที่คุ้มครอง (ระยะ: ${calculatedDistance.toFixed(2)} km จากตำแหน่งอ้างอิง).`;
+                message = `สถานีนี้อยู่ในพื้นที่คุ้มครอง (ระยะ: ${calculatedDistance.toFixed(2)} km จากตำแหน่งอ้างอิง)`;
                 result.style.color = "red";
             } else if (calculatedDistance <= 20) {
-                message = `สถานีนี้อยู่ในพื้นที่ประสานงาน (ระยะ: ${calculatedDistance.toFixed(2)} km จากตำแหน่งอ้างอิง).`;
+                message = `สถานีนี้อยู่ในพื้นที่ประสานงาน (ระยะ: ${calculatedDistance.toFixed(2)} km จากตำแหน่งอ้างอิง)`;
                 result.style.color = "orange";
             } else {
-                message = `สถานีนี้ไม่อยู่ในพื้นที่ Radio Quiet Zone (ระยะ: ${calculatedDistance.toFixed(2)} km จากตำแหน่งอ้างอิง). เงื่อนไขของพื้นที่ Radio Quiet Zone ไม่ใช้บังคับ`;
+                message = `สถานีนี้ไม่อยู่ในพื้นที่ Radio Quiet Zone (ระยะ: ${calculatedDistance.toFixed(2)} km จากตำแหน่งอ้างอิง)`;
                 result.style.color = "green";
             }
 
             result.textContent = message;
 
-          	if (userMarker) {
-    		    map.removeLayer(userMarker);
-	        }
-	          userMarker = L.marker([lat, lon]).addTo(map).bindPopup(`สถานีใหม่: ${lat.toFixed(6)}, ${lon.toFixed(6)}`).openPopup();
-	        }
+            if (userMarker) {
+                map.removeLayer(userMarker);
+            }
+            userMarker = L.marker([lat, lon]).addTo(map).bindPopup(`สถานีใหม่: ${lat.toFixed(6)}, ${lon.toFixed(6)}`).openPopup();
+        }
 
         function calculatePFD() {
             const eirp = parseFloat(document.getElementById("eirp").value);
@@ -276,65 +241,17 @@
             const pfd_dB = 10 * Math.log10(pfd);
 
             pfdResult.innerHTML = pfd_dB <= pfdLimit
-    		? `✅ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) ซึ่งไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>ท่านสามารถใช้ผลการคำนวณนี้ประกอบคำขอรับอนุญาตได้โดยไม่ต้องทำการทดสอบเพิ่มเติม`
-   		: `❌ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>หากประสงค์จะใช้ค่าความแรงดังกล่าว กรุณาใช้โปรแกรมการตรวจสอบระดับความแรงสัญญาณที่ละเอียดขึ้น และแนบผลการคำนวณประกอบคำขอรับอนุญาต`;
+                ? `✅ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) ซึ่งไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>ท่านสามารถใช้ผลการคำนวณนี้ประกอบคำขอรับอนุญาตได้โดยไม่ต้องทำการทดสอบเพิ่มเติม`
+                : `❌ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>หากประสงค์จะใช้ค่าความแรงดังกล่าว กรุณาใช้โปรแกรมการตรวจสอบระดับความแรงสัญญาณที่ละเอียดขึ้น และแนบผลการคำนวณประกอบคำขอรับอนุญาต`;
             pfdResult.style.color = pfd_dB <= pfdLimit ? "green" : "red";
         }
+
+        document.getElementById('downloadPDF').addEventListener('click', () => {
+            const element = document.body; // You can change this to any specific part of the page you want to include in the PDF
+            html2pdf()
+                .from(element)
+                .save();
+        });
     </script>
-    <script>
-        const radioAstronomyBands = [
-            { range: [1400, 1427], limit: -180 },
-            { range: [1610.6, 1613.8], limit: -184 },
-            { range: [1660, 1670], limit: -181 },
-            { range: [1718.8, 1722.2], limit: -183 },
-            { range: [4800, 5000], limit: -165 },
-            { range: [6650, 6675.2], limit: -167 },
-            { range: [10600, 10700], limit: -160 },
-            { range: [14470, 14500], limit: -158 },
-            { range: [15350, 15400], limit: -157 },
-            { range: [22010, 22500], limit: -145 },
-            { range: [22810, 22860], limit: -150 },
-            { range: [23070, 23120], limit: -150 },
-            { range: [23600, 24000], limit: -145 },
-            { range: [31300, 31800], limit: -141 },
-            { range: [42500, 43500], limit: -136 },
-            { range: [48940, 49040], limit: -140 },
-            { range: [79000, 86000], limit: -130 },
-            { range: [86000, 94000], limit: -129 },
-            { range: [94000, 100000], limit: -128 },
-            { range: [100000, 102000], limit: -131 },
-            { range: [102000, 111800], limit: -127 }
-        ];
-
-        function checkFrequency() {
-            const lowerFreq = parseFloat(document.getElementById("lowerFreq").value);
-            const upperFreq = parseFloat(document.getElementById("upperFreq").value);
-            const freqResult = document.getElementById("freqResult");
-
-            if (isNaN(lowerFreq) || isNaN(upperFreq) || lowerFreq >= upperFreq) {
-                freqResult.textContent = "กรุณาระบุคลื่นความถี่ที่ถูกต้อง";
-                freqResult.style.color = "red";
-                return;
-            }
-
-            let found = false;
-            for (const band of radioAstronomyBands) {
-                if ((lowerFreq >= band.range[0] && lowerFreq <= band.range[1]) ||
-                    (upperFreq >= band.range[0] && upperFreq <= band.range[1]) ||
-                    (lowerFreq <= band.range[0] && upperFreq >= band.range[1])) {
-                    found = true;
-                    pfdLimit = band.limit;
-                    freqResult.textContent = `⚠️ คลื่นความถี่นี้ทับซ้อนกับคลื่นความถี่วิทยุดาราศาสตร์ ค่าขีดจำกัด PFD ที่กำหนด: ${pfdLimit} dB(W/m²)`;
-                    freqResult.style.color = "orange";
-                    return;
-                }
-            }
-            pfdLimit = -57;
-            freqResult.textContent = '✅ คลื่นความถี่นี้ไม่ทับซ้อนกับคลื่นความถี่วิทยุดาราศาสตร์ ค่าขีดจำกัด PFD ที่กำหนด: -57 dB(W/m²)';
-            freqResult.style.color = "green";
-        }
-    </script>
-
 </body>
-
 </html>
