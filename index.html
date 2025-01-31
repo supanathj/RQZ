@@ -228,7 +228,7 @@
                 return;
             }
     	    if (lat < latMin || lat > latMax || lon < lonMin || lon > lonMax) {
-        	result.textContent = `พิกัดอยู่นอกช่วงที่กำหนด (ละติจูด: ${latMin} - ${latMax}, ลองจิจูด: ${lonMin} - ${lonMax})`;
+        	result.textContent = `พิกัดอยู่นอกช่วงที่กำหนด (ละติจูด: ${latMin} ถึง ${latMax}, ลองจิจูด: ${lonMin} ถึง ${lonMax})`;
         	result.style.color = "red";
         	return;
    	     }
