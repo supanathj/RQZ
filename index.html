@@ -121,7 +121,7 @@
 
     <div class="container">
         <div class="card">
-            <h2>ตรวจสอบพื้นที่</h2>
+            <h2>ตรวจสอบพิกัดของสถานีที่สนใจ</h2>
             <p>กรุณาใส่พิกัดของสถานีที่สนใจ:</p>
 
             <label for="latitude">ละติจูด:</label>
@@ -185,7 +185,7 @@
             }).addTo(map);
 
             L.marker([referenceLat, referenceLon]).addTo(map)
-    .bindPopup(`Reference Location: ${referenceLat}, ${referenceLon}`).openPopup();
+    .bindPopup(`ตำแหน่งอ้างอิง: ${referenceLat}, ${referenceLon}`).openPopup();
 
             L.circle([referenceLat, referenceLon], {
                 color: "red",
