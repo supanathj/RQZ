@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thailand Radio Quiet Zone Requirement Checker</title>
+    <link rel="stylesheet" href="style.css">
+
     <style>
         :root {
             --primary-color: #007bff;
@@ -56,27 +58,43 @@
 
         .three-column {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
         }
 
         .three-column .card {
             flex: 0 0 32%;
+            margin: 10px 0;
         }
 
-        input,
-        button {
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .form-group input {
+            flex: 2;
             padding: 10px;
-            margin: 5px;
             border: 1px solid var(--secondary-color);
             border-radius: 4px;
             font-size: 16px;
         }
 
         button {
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
             cursor: pointer;
             background-color: var(--primary-color);
             color: white;
-            border: none;
         }
 
         button:hover {
@@ -114,8 +132,22 @@
         }
 
         @media (min-width: 768px) {
+            .three-column .card {
+                flex: 0 0 32%;
+            }
+
             #map {
                 height: 500px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .three-column {
+                display: block;
+            }
+
+            .three-column .card {
+                flex: 0 0 100%;
             }
         }
     </style>
@@ -132,19 +164,17 @@
         <div class="card">
             <h2>ตรวจสอบพิกัดของสถานีที่สนใจ</h2>
             <p>กรุณาระบุพิกัดของสถานีที่สนใจ:</p>
-
-            <label for="latitude">ละติจูด:</label>
-            <input type="number" id="latitude" step="any" placeholder="ระบุพิกัด latitude">
-
-            <label for="longitude">ลองจิจูด:</label>
-            <input type="number" id="longitude" step="any" placeholder="ระบุพิกัด longitude">
-
+            <div class="form-group">
+                <label for="latitude">ละติจูด:</label>
+                <input type="number" id="latitude" step="any" placeholder="ระบุพิกัด latitude">
+            </div>
+            <div class="form-group">
+                <label for="longitude">ลองจิจูด:</label>
+                <input type="number" id="longitude" step="any" placeholder="ระบุพิกัด longitude">
+            </div>
             <button onclick="checkLocation()">ตรวจสอบพิกัด</button>
-
             <p id="result"></p>
-
             <div id="map"></div>
-
             <p class="zone-description">พื้นที่คุ้มครอง (3 km) เป็นพื้นที่โซนสีแดง: ไม่อนุญาตให้ตั้งสถานีวิทยุคมนาคมเพิ่มเติม ยกเว้นได้รับอนุญาตเป็นรายกรณีตามความจำเป็น</p>
             <p class="zone-description orange">พื้นที่ประสานงาน (20 km) เป็นพื้นที่โซนสีส้ม: สถานีที่จะตั้งจะต้องมีค่าระดับความแรงสัญญาณสอดคล้องตามระดับที่กำหนด</p>
         </div>
@@ -152,27 +182,26 @@
         <div class="card">
             <h2>ตรวจสอบการทับซ้อนกับคลื่นความถี่วิทยุดาราศาสตร์</h2>
             <p>กรุณาระบุคลื่นความถี่ (หน่วย MHz):</p>
-
-            <label for="lowerFreq">ความถี่เริ่มต้น:</label>
-            <input type="number" id="lowerFreq" step="any" placeholder="ระบุคลื่นความถี่เริ่มต้น">
-
-            <label for="upperFreq">ความถี่สิ้นสุด:</label>
-            <input type="number" id="upperFreq" step="any" placeholder="ระบุคลื่นความถี่สิ้นสุด">
-
+            <div class="form-group">
+                <label for="lowerFreq">ความถี่เริ่มต้น:</label>
+                <input type="number" id="lowerFreq" step="any" placeholder="ระบุคลื่นความถี่เริ่มต้น">
+            </div>
+            <div class="form-group">
+                <label for="upperFreq">ความถี่สิ้นสุด:</label>
+                <input type="number" id="upperFreq" step="any" placeholder="ระบุคลื่นความถี่สิ้นสุด">
+            </div>
             <button onclick="checkFrequency()">ตรวจสอบคลื่นความถี่</button>
-
             <p id="freqResult"></p>
         </div>
 
         <div class="card">
             <h2>ตรวจสอบค่าความแรงระดับสัญญาณ Power Flux Density (PFD) เบื้องต้น</h2>
             <p>กรุณาระบุค่ากำลังส่ง EIRP (หน่วย Watts) ของสถานีที่สนใจ:</p>
-
-            <label for="eirp">EIRP (W):</label>
-            <input type="number" id="eirp" step="any" placeholder="ระบุค่า EIRP">
-
+            <div class="form-group">
+                <label for="eirp">EIRP (W):</label>
+                <input type="number" id="eirp" step="any" placeholder="ระบุค่า EIRP">
+            </div>
             <button onclick="calculatePFD()">ตรวจสอบระดับสัญญาณ</button>
-
             <p class="formula">สูตรการคำนวณ</p>
             <p class="formula">  PFD (W/m²) = EIRP / (4πd²) โดย d คือระยะห่างจากตำแหน่งอ้างอิง (m)</p>
             <p class="formula">PFD (dBW/m²) = 10log10 (PFD (W/m²))</p>
@@ -195,7 +224,7 @@
             }).addTo(map);
 
             L.marker([referenceLat, referenceLon]).addTo(map)
-    .bindPopup(`ตำแหน่งอ้างอิง: ${referenceLat}, ${referenceLon}`).openPopup();
+                .bindPopup(`ตำแหน่งอ้างอิง: ${referenceLat}, ${referenceLon}`).openPopup();
 
             L.circle([referenceLat, referenceLon], {
                 color: "red",
@@ -285,40 +314,38 @@
             const pfd_dB = 10 * Math.log10(pfd);
 
             pfdResult.innerHTML = pfd_dB <= pfdLimit
-            ? `✅ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) ซึ่งไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>ท่านสามารถใช้ผลการคำนวณนี้ประกอบคำขอรับอนุญาตได้โดยไม่ต้องทำการทดสอบเพิ่มเติม`
-            : `❌ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>หากประสงค์จะใช้ค่าความแรงดังกล่าว กรุณาใช้โปรแกรมการตรวจสอบระดับความแรงสัญญาณที่ละเอียดขึ้น และแนบผลการคำนวณประกอบคำขอรับอนุญาต`;
+                ? `✅ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) ซึ่งไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>ท่านสามารถใช้ผลการคำนวณนี้ประกอบคำขอรับอนุญาตได้โดยไม่ต้องทำการทดสอบเพิ่มเติม`
+                : `❌ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²))<br>หากประสงค์จะใช้ค่าความแรงดังกล่าว กรุณาใช้โปรแกรมการตรวจสอบระดับความแรงสัญญาณที่ละเอียดขึ้น และแนบผลการคำนวณประกอบคำขอรับอนุญาต`;
             pfdResult.style.color = pfd_dB <= pfdLimit ? "green" : "red";
         }
-    </script>
-    <script>
-        const radioAstronomyBands = [
-            { range: [1400, 1427], limit: -180 },
-            { range: [1610.6, 1613.8], limit: -184 },
-            { range: [1660, 1670], limit: -181 },
-            { range: [1718.8, 1722.2], limit: -183 },
-            { range: [4800, 5000], limit: -165 },
-            { range: [6650, 6675.2], limit: -167 },
-            { range: [10600, 10700], limit: -160 },
-            { range: [14470, 14500], limit: -158 },
-            { range: [15350, 15400], limit: -157 },
-            { range: [22010, 22500], limit: -145 },
-            { range: [22810, 22860], limit: -150 },
-            { range: [23070, 23120], limit: -150 },
-            { range: [23600, 24000], limit: -145 },
-            { range: [31300, 31800], limit: -141 },
-            { range: [42500, 43500], limit: -136 },
-            { range: [48940, 49040], limit: -140 },
-            { range: [79000, 86000], limit: -130 },
-            { range: [86000, 94000], limit: -129 },
-            { range: [94000, 100000], limit: -128 },
-            { range: [100000, 102000], limit: -131 },
-            { range: [102000, 111800], limit: -127 }
-        ];
 
         function checkFrequency() {
             const lowerFreq = parseFloat(document.getElementById("lowerFreq").value);
             const upperFreq = parseFloat(document.getElementById("upperFreq").value);
             const freqResult = document.getElementById("freqResult");
+            const radioAstronomyBands = [
+                { range: [1400, 1427], limit: -180 },
+                { range: [1610.6, 1613.8], limit: -184 },
+                { range: [1660, 1670], limit: -181 },
+                { range: [1718.8, 1722.2], limit: -183 },
+                { range: [4800, 5000], limit: -165 },
+                { range: [6650, 6675.2], limit: -167 },
+                { range: [10600, 10700], limit: -160 },
+                { range: [14470, 14500], limit: -158 },
+                { range: [15350, 15400], limit: -157 },
+                { range: [22010, 22500], limit: -145 },
+                { range: [22810, 22860], limit: -150 },
+                { range: [23070, 23120], limit: -150 },
+                { range: [23600, 24000], limit: -145 },
+                { range: [31300, 31800], limit: -141 },
+                { range: [42500, 43500], limit: -136 },
+                { range: [48940, 49040], limit: -140 },
+                { range: [79000, 86000], limit: -130 },
+                { range: [86000, 94000], limit: -129 },
+                { range: [94000, 100000], limit: -128 },
+                { range: [100000, 102000], limit: -131 },
+                { range: [102000, 111800], limit: -127 }
+            ];
 
             if (isNaN(lowerFreq) || isNaN(upperFreq) || lowerFreq >= upperFreq) {
                 freqResult.textContent = "กรุณาระบุคลื่นความถี่ที่ถูกต้อง";
