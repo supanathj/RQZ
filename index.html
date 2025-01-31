@@ -268,8 +268,8 @@
             const pfd_dB = 10 * Math.log10(pfd);
 
             pfdResult.textContent = pfd_dB <= pfdLimit
-                ? `✅ ค่า PFD ไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²)). PFD: ${pfd_dB.toFixed(2)} dB(W/m²).`
-                : `❌ ค่า PFD เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²)). PFD: ${pfd_dB.toFixed(2)} dB(W/m²).`;
+                ? `✅ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) ซึ่งไม่เกินระดับที่กำหนด (${pfdLimit} dB(W/m²))`
+                : `❌ ค่า PFD ที่คำนวณได้: ${pfd_dB.toFixed(2)} dB(W/m²) เกินกว่าระดับที่กำหนด (${pfdLimit} dB(W/m²))`;
 
             pfdResult.style.color = pfd_dB <= pfdLimit ? "green" : "red";
         }
